@@ -5,19 +5,19 @@ import { addPosts, fetchPosts, fetchFakeApi } from './Redux/mainSlice';
 import { useEffect } from 'react';
 
 const Child = () => {
-  const state = useSelector((state) => state.main);
+  const { posts, status, error } = useSelector((state) => state.main);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(state);
-  }, [state]);
+    console.log({ posts, status, error: error.message });
+  }, [posts, error, status]);
 
   return (
     <div>
       <button onClick={() => dispatch(addPosts({ title: 'pierwszy post' }))}>
         Increment
       </button>
-      <button onClick={() => dispatch(fetchFakeApi('password123'))}>
+      <button onClick={() => dispatch(fetchFakeApi('password1223'))}>
         Fetch fake posts
       </button>
       <button onClick={() => dispatch(fetchPosts())}>Fetch ALL posts</button>
@@ -29,7 +29,7 @@ const Child = () => {
           gridGap: '30px',
         }}
       >
-        {state.map(({ id, title }) => (
+        {posts.map(({ id, title }) => (
           <div
             key={id}
             style={{

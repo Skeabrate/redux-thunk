@@ -22,27 +22,39 @@ export const fetchFakeApi = createAsyncThunk('posts/fetchFakeApi', (val) => {
           { id: 1, title: 'drugi post' },
           { id: 2, title: 'trzeci post' },
         ]);
-      } else reject();
+      } else reject(new Error('wrong password'));
     }, 1000);
   });
 });
 
 export const mainSlice = createSlice({
   name: 'mainSlice',
-  initialState: [],
+  initialState: {
+    posts: [],
+    status: '',
+    error: false,
+  },
   reducers: {
     addPosts: (state, action) => {
       console.log(state);
-      state.push({ id: 0, title: action.payload.title });
+      state.posts.push({ id: 0, title: action.payload.title });
     },
   },
   extraReducers(builder) {
+    builder.addCase(fetchPosts.fulfilled, (state, action) => {
+      state.posts.push(...action.payload);
+    });
     builder
-      .addCase(fetchPosts.fulfilled, (state, action) => {
-        return action.payload;
+      .addCase(fetchFakeApi.pending, (state, action) => {
+        state.status = 'loading';
       })
       .addCase(fetchFakeApi.fulfilled, (state, action) => {
-        state.push(...action.payload);
+        state.status = 'succeeded';
+        state.posts.push(...action.payload);
+      })
+      .addCase(fetchFakeApi.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error;
       });
   },
 });
