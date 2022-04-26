@@ -1,26 +1,43 @@
+import { useEffect, useRef } from 'react';
 import { Provider } from 'react-redux';
 import store from './Redux/store';
 import { useSelector, useDispatch } from 'react-redux';
-import { addPosts, fetchPosts, fetchFakeApi } from './Redux/mainSlice';
-import { useEffect } from 'react';
+import {
+  addPosts,
+  removePosts,
+  fetchPosts,
+  fetchFakeApi,
+} from './Redux/mainSlice';
 
 const Child = () => {
   const { posts, status, error } = useSelector((state) => state.main);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    console.log({ posts, status, error: error.message });
-  }, [posts, error, status]);
+  const postId = useRef(0);
+
+  /* useEffect(() => {
+    console.log({ posts, status, error: error.message })
+     console.log(posts);
+  }, [posts, error, status]); */
 
   return (
-    <div>
-      <button onClick={() => dispatch(addPosts({ title: 'pierwszy post' }))}>
-        Increment
+    <main>
+      <button
+        onClick={() => {
+          dispatch(addPosts({ id: postId.current, title: 'przykladowy post' }));
+          postId.current++;
+        }}
+      >
+        Add post
+      </button>
+      <button onClick={() => dispatch(removePosts({ id: 0 }))}>
+        Remove post
       </button>
       <button onClick={() => dispatch(fetchFakeApi('password1223'))}>
         Fetch fake posts
       </button>
       <button onClick={() => dispatch(fetchPosts())}>Fetch ALL posts</button>
+
       <h2>Posts:</h2>
       <div
         style={{
@@ -29,7 +46,7 @@ const Child = () => {
           gridGap: '30px',
         }}
       >
-        {posts.map(({ id, title }) => (
+        {posts?.map(({ id, title }) => (
           <div
             key={id}
             style={{
@@ -44,7 +61,7 @@ const Child = () => {
           </div>
         ))}
       </div>
-    </div>
+    </main>
   );
 };
 

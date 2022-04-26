@@ -42,8 +42,12 @@ export const mainSlice = createSlice({
   },
   reducers: {
     addPosts: (state, action) => {
-      console.log(state);
-      state.posts.push({ id: 0, title: action.payload.title });
+      state.posts.push(action.payload);
+    },
+    removePosts: (state, action) => {
+      const posts = state.posts.filter((item) => item.id !== action.payload.id);
+
+      return { ...state, posts };
     },
   },
   extraReducers: {
@@ -81,5 +85,5 @@ export const mainSlice = createSlice({
   }, */
 });
 
-export const { addPosts } = mainSlice.actions;
+export const { addPosts, removePosts } = mainSlice.actions;
 export default mainSlice.reducer;
