@@ -40,7 +40,23 @@ export const mainSlice = createSlice({
       state.posts.push({ id: 0, title: action.payload.title });
     },
   },
-  extraReducers(builder) {
+  extraReducers: {
+    [fetchPosts.fulfilled]: (state, action) => {
+      state.posts.push(...action.payload);
+    },
+    [fetchFakeApi.pending]: (state, action) => {
+      state.status = 'loading';
+    },
+    [fetchFakeApi.fulfilled]: (state, action) => {
+      state.status = 'succeeded';
+      state.posts.push(...action.payload);
+    },
+    [fetchFakeApi.rejected]: (state, action) => {
+      state.status = 'failed';
+      state.error = action.error;
+    },
+  },
+  /* extraReducers(builder) {
     builder.addCase(fetchPosts.fulfilled, (state, action) => {
       state.posts.push(...action.payload);
     });
@@ -56,7 +72,7 @@ export const mainSlice = createSlice({
         state.status = 'failed';
         state.error = action.error;
       });
-  },
+  }, */
 });
 
 export const { addPosts } = mainSlice.actions;
