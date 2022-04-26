@@ -3,14 +3,20 @@ import axios from 'axios';
 
 const POST_URL = 'https://jsonplaceholder.typicode.com/posts';
 
-export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
-  try {
-    const res = await axios.get(POST_URL);
-    return [...res.data];
-  } catch (err) {
-    console.log(err);
+export const fetchPosts = createAsyncThunk(
+  'posts/fetchPosts',
+  async (obj, { dispatch, getState }) => {
+    try {
+      const { main } = getState(); // You can get every store
+      console.log(main);
+
+      const res = await axios.get(POST_URL);
+      return [...res.data];
+    } catch (err) {
+      console.log(err);
+    }
   }
-});
+);
 
 export const fetchFakeApi = createAsyncThunk('posts/fetchFakeApi', (val) => {
   return new Promise((resolve, reject) => {
